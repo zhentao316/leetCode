@@ -1,9 +1,13 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 /**
  * @Author: huangzhentao
@@ -101,11 +105,6 @@ public class Array {
     return max;
   }
 
-  public static void main(String[] args) {
-    int[] temp = {1, 2, 3};
-    nextPermutation(temp);
-    System.out.println(Arrays.toString(temp));
-  }
 
   /**
    * 31. 下一个排列
@@ -138,6 +137,34 @@ public class Array {
       j--;
     }
   }
+
+  public static int findShortestSubArray(int[] nums) {
+    int minLength = Integer.MAX_VALUE;
+    Map<Integer, Integer> maps = new HashMap<>();
+    int maxDu = 0;
+    for (int i = 0; i < nums.length; i++) {
+      if (maps.containsKey(nums[i])) {
+        continue;
+      }
+      int length = 0;
+      int tempDu = 0;
+      for (int j = i; j < nums.length; j++) {
+        if (nums[j] == nums[i]) {
+          length = j - i + 1;
+          tempDu++;
+        }
+      }
+      if (tempDu > maxDu) {
+        maxDu = tempDu;
+        minLength = length;
+      } else if (tempDu == maxDu) {
+        minLength = Math.min(minLength, length);
+      }
+      maps.put(nums[i], 1);
+    }
+    return minLength;
+  }
+
 
   public int removeDuplicates(int[] nums) {
     int mark = 0;
@@ -462,8 +489,8 @@ public class Array {
     List<Integer> res = new ArrayList<>(nums.length);
     List<Integer> temp = new ArrayList<>();
     for (int i = 0; i < nums.length; i++) {
-      if (res.get(nums[i]-1) == null) {
-        res.set(nums[i]-1, nums[i]);
+      if (res.get(nums[i] - 1) == null) {
+        res.set(nums[i] - 1, nums[i]);
       }
     }
     for (int i = 0; i < nums.length; i++) {
@@ -474,4 +501,166 @@ public class Array {
     return temp;
   }
 
+  /**
+   * 717. 1比特与2比特字符
+   *
+   * @param bits
+   * @return
+   */
+  public boolean isOneBitCharacter(int[] bits) {
+    int index = 0;
+    int length = bits.length;
+    if (bits == null || bits[length - 1] != 0) {
+      return false;
+    }
+    if (bits.length == 1 && bits[0] == 0) {
+      return true;
+    }
+    while (index < length) {
+      if (bits[index] == 1) {
+        index = index + 2;
+      } else {
+        index++;
+      }
+      if (index == length - 1 && bits[index] == 0) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public boolean checkPossibility(int[] nums) {
+    int count = 0;
+    int temp = Integer.MIN_VALUE;
+    for (int i = 0; i < nums.length - 1; i++) {
+
+      if (nums[i] > nums[i + 1]) {
+        count++;
+        if (nums[i + 1] < temp) {
+          nums[i + 1] = temp;
+        } else {
+          nums[i] = temp;
+        }
+      }
+    }
+    return count < 2;
+  }
+
+  public List<String> commonChars(String[] A) {
+    int[][] charCounts = new int[A.length][26];
+    List<String> reuslt = new ArrayList<>();
+    for (int i = 0; i < A.length; i++) {
+      String temp = A[i];
+      for (char s : temp.toCharArray()) {
+        charCounts[i][s - 'a'] = charCounts[i][s - 'a'] + 1;
+      }
+    }
+    for (int i = 0; i < 26; i++) {
+      int tempCount = Integer.MAX_VALUE;
+      for (int j = 0; j < A.length; j++) {
+        tempCount = Math.min(tempCount, charCounts[j][i]);
+      }
+      while (tempCount > 0) {
+        reuslt.add((char) ('a' + i) + "");
+      }
+    }
+    return reuslt;
+  }
+  public int[] intersect(int[] nums1, int[] nums2) {
+    List<Integer> result=new ArrayList<>();
+    Map<Integer,Integer> count1=new HashMap<>();
+    Map<Integer,Integer> count2=new HashMap<>();
+    for(int temp:nums1){
+     count1.put(temp, count1.getOrDefault(temp,0));
+    }
+    for(int temp:nums2){
+      count2.put(temp, count2.getOrDefault(temp,0));
+    }
+    for(Map.Entry<Integer,Integer> temp1:count1.entrySet()){
+       int count=Math.min(temp1.getValue(),count2.getOrDefault(temp1.getKey(),0));
+       while (count-->0){
+         result.add(temp1.getKey());
+       }
+    }
+    Collections.sort(result);
+    return result.stream().mapToInt(Integer::valueOf).toArray();
+  }
+
+  public int lengthOfLIS(int[] nums) {
+    int left=0;int right=0;
+    int max=0;
+   while (right<nums.length-1){
+     while (right<nums.length-1&&nums[right+1]>=nums[right])
+     {
+       right++;
+     }
+     max=Math.max(right-left+1,max);
+     right++;
+     left=right;
+   }
+   return max;
+  }
+
+  /**
+   * 1365. 有多少小于当前数字的数字
+   * @param nums
+   * @return
+   */
+  public  static int[] smallerNumbersThanCurrent(int[] nums) {
+   int[] result=new int[nums.length];
+   for(int i=0;i<nums.length;i++){
+       for(int j=0;j<nums.length;j++){
+         if(nums[j]>nums[i]){
+           result[j]=result[j]+1;
+         }
+       }
+   }
+   return result;
+  }
+  public static String rankTeams(String[] votes) {
+   Map<Character,int[]> maps=new TreeMap<>();
+   for(String temp:votes ){
+      for(int j=0;j<temp.length();j++){
+        char c=temp.charAt(j);
+        int[] ints=maps.getOrDefault(c,new int[temp.length()]);
+          ints[j]++;
+          maps.put(c,ints);
+      }
+   }
+   List<Map.Entry<Character,int[]>> lists=new ArrayList<>(maps.entrySet());
+   Collections.sort(lists,(t1,t2)->{
+     int[] ranks1 = t1.getValue();
+     int[] ranks2 = t2.getValue();
+     for(int i=0;i<ranks1.length;i++){
+       if(ranks1[i]!=ranks2[i]){
+         return ranks2[i]-ranks1[i];
+       }
+     }
+     return t2.getKey()-t1.getKey();
+   });
+  return lists.stream().map(Map.Entry::getKey).map(String::valueOf).collect(Collectors.joining());
+
+  }
+  public  static int[] smallerNumbersThanCurrent2(int[] nums) {
+    int[] temps=new int[nums.length];
+    int[] result=new int[nums.length];
+    System.arraycopy(nums,0,temps,0,nums.length);
+    Arrays.sort(temps);
+    Map<Integer,Integer> counts=new HashMap<>();
+    counts.put(temps[0],0);
+     for (int j=1;j<temps.length;j++){
+      if(temps[j]>temps[j-1]){
+       counts.put(temps[j],j);
+      }
+    }
+     for (int i=0;i<nums.length;i++){
+       result[i]=counts.get(nums[i]);
+     }
+     return result;
+  }
+
+  public static void main(String[] args) {
+int[] nums={8,1,2,2,3};
+    System.out.println(Arrays.toString(smallerNumbersThanCurrent2(nums)));
+  }
 }
