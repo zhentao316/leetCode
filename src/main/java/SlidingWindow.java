@@ -1,7 +1,9 @@
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Stack;
 
 /**
  * @Author: huangzhentao
@@ -102,7 +104,7 @@ public class SlidingWindow {
   public static void main(String[] args) {
     int[] nums = {1, 3, -1, -3, 5, 3, 6, 7};
     String str = "eidbaooo";
-    System.out.println(checkInclusion(str, "ab"));
+    System.out.println(isValid("){"));
   }
 
   public int characterReplacement(String s, int k) {
@@ -122,5 +124,48 @@ public class SlidingWindow {
       res = Math.max(res, right - left + 1);
     }
     return res;
+  }
+
+  public  static int lengthOfLongestSubstring(String s) {
+    Map<Character,Integer> maps=new HashMap<>();
+    int startIndex=0;
+    int maxlenth=0;
+    for(int i=0;i<s.length();i++){
+      Character tChar=s.charAt(i);
+      if(maps.containsKey(tChar)&&maps.get(tChar)>startIndex){
+        startIndex=maps.get(tChar)+1;
+      }
+      maxlenth=Math.max(maxlenth,i-startIndex+1);
+      maps.put(tChar,i);
+    }
+    return maxlenth;
+  }
+
+  public static boolean isValid(String s) {
+    Stack<Character>  stack=new Stack<>();
+    Map<Character,Character> pairs=new HashMap();
+    pairs.put('[',']');
+    pairs.put('{','}');
+    pairs.put('(',')');
+    for(int i=0;i<s.length();i++){
+       Character t=s.charAt(i);
+       if(!stack.isEmpty()){
+         Character temp=stack.peek();
+         if(pairs.get(temp)!=null&&pairs.get(temp).equals(t)){
+           stack.pop();
+         }else {
+           stack.push(t);
+           if(t.equals(']')||t.equals('}')||t.equals(')')){
+            break;
+           }
+         }
+       }else {
+         stack.push(t);
+         if(t.equals(']')||t.equals('}')||t.equals(')')){
+           break;
+         }
+       }
+    }
+    return stack.isEmpty();
   }
 }

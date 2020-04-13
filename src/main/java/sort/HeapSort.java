@@ -34,8 +34,8 @@ public class HeapSort {
 
   public static void main(String[] args) {
     int[] nums={7,6,5,4,3,2,1};
+
      for (int i=nums.length;i>0;i--){
-       sort(nums,i);
        swap(nums,0,i-1);
      }
     System.out.println(Arrays.toString(nums));

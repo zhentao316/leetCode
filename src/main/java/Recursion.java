@@ -1,4 +1,6 @@
 import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * @Author: huangzhentao
@@ -41,6 +43,8 @@ public class Recursion {
     int[] temp=new  int[3];
     Arrays.sort(temp);
     System.out.println(temp[2]);
+    Map<String,Integer> tests=new LinkedHashMap<>();
+    tests.put("1",2);
   }
 
 }

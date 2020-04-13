@@ -81,7 +81,10 @@ public class Frog {
 
 class Node{
   int value;
-   Node parent;
+
+  Node left;
+  Node right;
+  Node parent;
   List<Node> nodes=new ArrayList<>();
   public Node(int value){
     this.value=value;
